@@ -5,7 +5,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.use
 
 class ExpandableConstraintLayout
 @JvmOverloads constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
@@ -14,7 +16,7 @@ class ExpandableConstraintLayout
     private var defaultHeight: Int = 0
     private var oldExpandedHeight: Int? = null
     private var oldFoldedHeight: Int? = null
-    private var isCollapsed = true
+    private var isCollapsed = false
     var duration: Long = 400
     var onLayoutStateChangeListener: OnLayoutStateChangeListener? = null
 
@@ -53,12 +55,27 @@ class ExpandableConstraintLayout
     init {
         inflate(context, R.layout.custom_expandable_constraint_layout, this)
 
+        var firstTargetId: String? = null
+
+        context?.theme?.obtainStyledAttributes(attrs, R.styleable.ExpandableConstraintLayout, 0, 0)
+            ?.use {
+                it.getString(R.styleable.ExpandableConstraintLayout_first_target_view_id)
+                    ?.let { firstTargetViewId ->
+                        firstTargetId = firstTargetViewId
+                    }
+            }
+
         // 화면이 배치된 후 height 저장
         viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 this@ExpandableConstraintLayout.height.run {
                     defaultHeight = this
                     oldExpandedHeight = this
+
+                    firstTargetId?.run {
+                        setHeight(findYPositionById(this))
+                    }
+
                 }
 
                 viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -68,9 +85,13 @@ class ExpandableConstraintLayout
     }
 
     override fun foldLayout() {
-        oldFoldedHeight?.run {
-            startHeightChangeAnimation(this)
-            isCollapsed = false
+        oldFoldedHeight?.let { oldFoldedHeight ->
+            if (oldFoldedHeight < this.height) {
+                oldExpandedHeight = this.height
+
+                startHeightChangeAnimation(oldFoldedHeight)
+                isCollapsed = false
+            }
         }
     }
 
@@ -84,16 +105,20 @@ class ExpandableConstraintLayout
         }
     }
 
-    override fun foldLayoutById(targetViewId: Int) {
-        this.findViewById<View>(targetViewId).apply {
-            foldLayout((y + this.height).toInt())
+    override fun foldLayoutById(@IdRes targetViewId: Int) =
+        findYPositionById(targetViewId).run {
+            foldLayout(this)
         }
-    }
+
 
     override fun expandLayout() {
-        oldExpandedHeight?.run {
-            startHeightChangeAnimation(this)
-            isCollapsed = true
+        oldExpandedHeight?.let { oldExpandedHeight ->
+            if (oldExpandedHeight > this.height) {
+                oldFoldedHeight = this.height
+
+                startHeightChangeAnimation(oldExpandedHeight)
+                isCollapsed = true
+            }
         }
     }
 
@@ -121,8 +146,26 @@ class ExpandableConstraintLayout
             expandLayout()
     }
 
+    private fun findYPositionById(viewId: String) =
+        this.findViewById<View>(findResourceByIdString(viewId, "id")).run {
+            (y + height).toInt()
+        }
+
+    private fun findYPositionById(@IdRes viewId: Int) =
+        this.findViewById<View>(viewId).run {
+            (y + height).toInt()
+        }
+
+    private fun setHeight(height: Int) {
+        this.layoutParams.height = height
+        this.requestLayout()
+    }
+
     private fun startHeightChangeAnimation(height: Int) {
         getValueAnimator(this, this.height, height).start()
     }
+
+    private fun findResourceByIdString(id: String, type: String) =
+        resources.getIdentifier(id, type, context.packageName)
 
 }
