@@ -2,7 +2,8 @@ package com.nightowl094.lib
 
 import androidx.annotation.IdRes
 
-interface ExpandalbeConstraintLayoutUseCase {
+interface ExpandableConstraintLayoutUseCase {
+    val isExpanded: Boolean
     fun foldLayout()
     fun foldLayout(height: Int)
     fun foldLayoutById(@IdRes targetViewId: Int)

@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onAnimationEnd() {
                 Log.d("ttt", "onAnimationEnd: #3")
+                Log.d("ttt", "onAnimationEnd: #4 ${testc1.isExpanded}")
             }
         }
 

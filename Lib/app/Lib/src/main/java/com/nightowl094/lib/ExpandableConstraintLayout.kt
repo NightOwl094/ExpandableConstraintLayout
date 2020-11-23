@@ -9,14 +9,17 @@ import androidx.constraintlayout.widget.ConstraintLayout
 
 class ExpandableConstraintLayout
 @JvmOverloads constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0) :
-    ConstraintLayout(context!!, attrs, defStyleAttr), ExpandalbeConstraintLayoutUseCase {
+    ConstraintLayout(context!!, attrs, defStyleAttr), ExpandableConstraintLayoutUseCase {
 
     private var defaultHeight: Int = 0
     private var oldExpandedHeight: Int? = null
     private var oldFoldedHeight: Int? = null
-    private var isCollapsed = false
+    private var isCollapsed = true
     var duration: Long = 400
     var onLayoutStateChangeListener: OnLayoutStateChangeListener? = null
+
+    override val isExpanded: Boolean
+        get() = isCollapsed
 
     private val getValueAnimator =
         { containerView: ExpandableConstraintLayout, oldHeight: Int, newHeight: Int ->
