@@ -9,6 +9,6 @@ interface ExpandableConstraintLayoutUseCase {
     fun foldLayoutById(@IdRes targetViewId: Int)
     fun expandLayout()
     fun expandLayout(height: Int)
-    fun invalidateLayout()
+    fun invalidateLayout(callback: (() -> Unit)? = null)
     fun toggleLayout()
 }

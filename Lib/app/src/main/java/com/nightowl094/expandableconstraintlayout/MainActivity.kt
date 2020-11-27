@@ -55,7 +55,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         invalidate.setOnClickListener {
-            testc1.invalidateLayout()
+            testc1.invalidateLayout() {
+                Log.d("ttt", "onCreate: is invalidated")
+            }
         }
 
     }

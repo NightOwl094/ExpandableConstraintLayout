@@ -115,8 +115,8 @@ class ExpandableConstraintLayout
         }
     }
 
-    override fun invalidateLayout() {
-        willSetFirstHeight()
+    override fun invalidateLayout(callback: (() -> Unit)?) {
+        willSetFirstHeight(callback)
     }
 
     override fun toggleLayout() {
@@ -148,7 +148,7 @@ class ExpandableConstraintLayout
     private fun findResourceByIdString(id: String, type: String) =
         resources.getIdentifier(id, type, context.packageName)
 
-    private fun willSetFirstHeight() {
+    private fun willSetFirstHeight(callback: (() -> Unit)? = null) {
         this@ExpandableConstraintLayout.apply {
             viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
@@ -161,6 +161,8 @@ class ExpandableConstraintLayout
                         }
 
                         isCollapsed = false
+
+                        callback?.invoke()
                     }
 
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
