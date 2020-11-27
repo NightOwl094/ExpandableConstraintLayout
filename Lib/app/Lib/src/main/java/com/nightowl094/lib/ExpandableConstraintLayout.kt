@@ -167,7 +167,10 @@ class ExpandableConstraintLayout
                 }
             })
 
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            layoutParams?.apply {
+                height = LayoutParams.WRAP_CONTENT
+            }
+
             requestLayout()
         }
     }
