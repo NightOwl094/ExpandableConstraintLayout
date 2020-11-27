@@ -152,9 +152,9 @@ class ExpandableConstraintLayout
         this@ExpandableConstraintLayout.apply {
             viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    this@ExpandableConstraintLayout.height.run {
-                        defaultHeight = height
-                        oldExpandedHeight = height
+                    this@ExpandableConstraintLayout.height.let {
+                        defaultHeight = it
+                        oldExpandedHeight = it
 
                         firstTargetId?.run {
                             setHeight(findYPositionById(this))
