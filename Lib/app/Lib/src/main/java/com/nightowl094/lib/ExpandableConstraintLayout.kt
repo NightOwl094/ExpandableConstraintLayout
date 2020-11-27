@@ -17,6 +17,7 @@ class ExpandableConstraintLayout
     private var oldExpandedHeight: Int? = null
     private var oldFoldedHeight: Int? = null
     private var isCollapsed = false
+    var firstTargetId: String? = null
     var duration: Long = 400
     var onLayoutStateChangeListener: OnLayoutStateChangeListener? = null
 
@@ -55,8 +56,6 @@ class ExpandableConstraintLayout
     init {
         inflate(context, R.layout.custom_expandable_constraint_layout, this)
 
-        var firstTargetId: String? = null
-
         context?.theme?.obtainStyledAttributes(attrs, R.styleable.ExpandableConstraintLayout, 0, 0)
             ?.use {
                 it.getString(R.styleable.ExpandableConstraintLayout_first_target_view_id)
@@ -65,23 +64,7 @@ class ExpandableConstraintLayout
                     }
             }
 
-        // 화면이 배치된 후 height 저장
-        viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                this@ExpandableConstraintLayout.height.run {
-                    defaultHeight = this
-                    oldExpandedHeight = this
-
-                    firstTargetId?.run {
-                        setHeight(findYPositionById(this))
-                    }
-
-                }
-
-                viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
-
+        willSetFirstHeight()
     }
 
     override fun foldLayout() {
@@ -133,10 +116,7 @@ class ExpandableConstraintLayout
     }
 
     override fun invalidateLayout() {
-        oldExpandedHeight = null
-        oldFoldedHeight = null
-        startHeightChangeAnimation(defaultHeight)
-        isCollapsed = false
+        willSetFirstHeight()
     }
 
     override fun toggleLayout() {
@@ -167,5 +147,29 @@ class ExpandableConstraintLayout
 
     private fun findResourceByIdString(id: String, type: String) =
         resources.getIdentifier(id, type, context.packageName)
+
+    private fun willSetFirstHeight() {
+        this@ExpandableConstraintLayout.apply {
+            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    this@ExpandableConstraintLayout.height.run {
+                        defaultHeight = height
+                        oldExpandedHeight = height
+
+                        firstTargetId?.run {
+                            setHeight(findYPositionById(this))
+                        }
+
+                        isCollapsed = false
+                    }
+
+                    viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
+
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            requestLayout()
+        }
+    }
 
 }
