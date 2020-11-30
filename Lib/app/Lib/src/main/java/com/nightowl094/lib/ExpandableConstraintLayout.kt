@@ -17,6 +17,7 @@ class ExpandableConstraintLayout
     private var oldExpandedHeight: Int? = null
     private var oldFoldedHeight: Int? = null
     private var isCollapsed = false
+    private var toggleControl = true
     var firstTargetId: String? = null
     var duration: Long = 400
     var onLayoutStateChangeListener: OnLayoutStateChangeListener? = null
@@ -44,8 +45,12 @@ class ExpandableConstraintLayout
 
                             this.onAnimation()
 
-                            if ((va.animatedValue as Int) == newHeight)
+                            if ((va.animatedValue as Int) == newHeight) {
                                 onAnimationEnd()
+
+                                isCollapsed = isCollapsed.not()
+                                toggleControl = true
+                            }
 
                         }
                     }
@@ -73,7 +78,6 @@ class ExpandableConstraintLayout
                 oldExpandedHeight = this.height
 
                 startHeightChangeAnimation(oldFoldedHeight)
-                isCollapsed = false
             }
         }
     }
@@ -83,15 +87,14 @@ class ExpandableConstraintLayout
             oldExpandedHeight = this.height
             oldFoldedHeight = height
             startHeightChangeAnimation(height)
-
-            isCollapsed = false
         }
     }
 
-    override fun foldLayoutById(@IdRes targetViewId: Int) =
+    override fun foldLayoutById(@IdRes targetViewId: Int) {
         findYPositionById(targetViewId).run {
             foldLayout(this)
         }
+    }
 
 
     override fun expandLayout() {
@@ -100,7 +103,6 @@ class ExpandableConstraintLayout
                 oldFoldedHeight = this.height
 
                 startHeightChangeAnimation(oldExpandedHeight)
-                isCollapsed = true
             }
         }
     }
@@ -110,8 +112,6 @@ class ExpandableConstraintLayout
             oldFoldedHeight = this.height
             oldExpandedHeight = height
             startHeightChangeAnimation(height)
-
-            isCollapsed = true
         }
     }
 
@@ -120,10 +120,14 @@ class ExpandableConstraintLayout
     }
 
     override fun toggleLayout() {
-        if (isCollapsed)
-            foldLayout()
-        else
-            expandLayout()
+        if (toggleControl) {
+            toggleControl = false
+
+            if (isCollapsed)
+                foldLayout()
+            else
+                expandLayout()
+        }
     }
 
     private fun findYPositionById(viewId: String) =
