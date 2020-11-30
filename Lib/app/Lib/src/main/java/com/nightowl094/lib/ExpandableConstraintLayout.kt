@@ -46,10 +46,10 @@ class ExpandableConstraintLayout
                             this.onAnimation()
 
                             if ((va.animatedValue as Int) == newHeight) {
-                                onAnimationEnd()
-
                                 isCollapsed = isCollapsed.not()
                                 toggleControl = true
+
+                                onAnimationEnd()
                             }
 
                         }
