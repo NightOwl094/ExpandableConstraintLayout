@@ -39,8 +39,9 @@ class ExpandableConstraintLayout
 
                         onLayoutStateChangeListener?.run {
                             if (isStarted.not()) {
-                                onAnimationStart()
                                 isStarted = true
+
+                                onAnimationStart()
                             }
 
                             this.onAnimation()
