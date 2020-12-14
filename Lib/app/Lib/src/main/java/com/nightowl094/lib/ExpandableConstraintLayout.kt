@@ -53,6 +53,8 @@ class ExpandableConstraintLayout
                                 onAnimationEnd()
                             }
 
+                        } ?: run {
+                            toggleControl = true
                         }
                     }
                 }
