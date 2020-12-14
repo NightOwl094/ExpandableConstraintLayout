@@ -41,15 +41,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         expand800Btn.setOnClickListener {
-            testc1.expandLayout(800)
+            testc1.expandLayout(height = 800)
         }
 
         fold400Btn.setOnClickListener {
-            testc1.foldLayout(400)
+            testc1.foldLayout(height = 400)
         }
 
         toggleBtn.setOnClickListener {
-            testc1.toggleLayout()
+            testc1.toggleLayout(1)
         }
 
         foldTargetTextView2.setOnClickListener {

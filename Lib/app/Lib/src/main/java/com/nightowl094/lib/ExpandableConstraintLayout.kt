@@ -27,10 +27,13 @@ class ExpandableConstraintLayout
         get() = isCollapsed
 
     private val getValueAnimator =
-        { containerView: ExpandableConstraintLayout, oldHeight: Int, newHeight: Int ->
+        { containerView: ExpandableConstraintLayout, oldHeight: Int, newHeight: Int, animationTime: Long? ->
             ValueAnimator.ofInt(oldHeight, newHeight)
                 .apply {
-                    duration = containerView.duration
+                    duration = animationTime?.run {
+                        this
+                    } ?: containerView.duration
+
                 }.also {
                     var isStarted = false
 
@@ -80,46 +83,46 @@ class ExpandableConstraintLayout
         willSetFirstHeight()
     }
 
-    override fun foldLayout() {
+    override fun foldLayout(duration: Long?) {
         oldFoldedHeight?.let { oldFoldedHeight ->
             if (oldFoldedHeight < this.height) {
                 oldExpandedHeight = this.height
 
-                startHeightChangeAnimation(oldFoldedHeight)
+                startHeightChangeAnimation(oldFoldedHeight, duration)
             }
         }
     }
 
-    override fun foldLayout(height: Int) {
+    override fun foldLayout(height: Int, duration: Long?) {
         if (height < this.height) {
             oldExpandedHeight = this.height
             oldFoldedHeight = height
-            startHeightChangeAnimation(height)
+            startHeightChangeAnimation(height, duration)
         }
     }
 
-    override fun foldLayoutById(@IdRes targetViewId: Int) {
+    override fun foldLayoutById(@IdRes targetViewId: Int, duration: Long?) {
         findYPositionById(targetViewId).run {
-            foldLayout(this)
+            foldLayout(this, duration)
         }
     }
 
 
-    override fun expandLayout() {
+    override fun expandLayout(duration: Long?) {
         oldExpandedHeight?.let { oldExpandedHeight ->
             if (oldExpandedHeight > this.height) {
                 oldFoldedHeight = this.height
 
-                startHeightChangeAnimation(oldExpandedHeight)
+                startHeightChangeAnimation(oldExpandedHeight, duration)
             }
         }
     }
 
-    override fun expandLayout(height: Int) {
+    override fun expandLayout(height: Int, duration: Long?) {
         if (height > this.height) {
             oldFoldedHeight = this.height
             oldExpandedHeight = height
-            startHeightChangeAnimation(height)
+            startHeightChangeAnimation(height, duration)
         }
     }
 
@@ -127,14 +130,14 @@ class ExpandableConstraintLayout
         willSetFirstHeight(callback)
     }
 
-    override fun toggleLayout() {
+    override fun toggleLayout(duration: Long?) {
         if (toggleControl) {
             toggleControl = false
 
             if (isCollapsed)
-                foldLayout()
+                foldLayout(duration)
             else
-                expandLayout()
+                expandLayout(duration)
         }
     }
 
@@ -153,8 +156,8 @@ class ExpandableConstraintLayout
         this.requestLayout()
     }
 
-    private fun startHeightChangeAnimation(height: Int) {
-        getValueAnimator(this, this.height, height).start()
+    private fun startHeightChangeAnimation(height: Int, duration: Long? = null) {
+        getValueAnimator(this, this.height, height, duration).start()
     }
 
     private fun findResourceByIdString(id: String, type: String) =
