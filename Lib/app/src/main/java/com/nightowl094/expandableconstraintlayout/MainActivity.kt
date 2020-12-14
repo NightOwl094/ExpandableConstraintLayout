@@ -10,6 +10,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+/*
 
         testc1.onLayoutStateChangeListener = object : OnLayoutStateChangeListener {
             override fun onAnimationStart() {
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("ttt", "onAnimationEnd: #4 ${testc1.isExpanded}")
             }
         }
+*/
 
         testc1.setOnClickListener {
             testc1.toggleLayout()

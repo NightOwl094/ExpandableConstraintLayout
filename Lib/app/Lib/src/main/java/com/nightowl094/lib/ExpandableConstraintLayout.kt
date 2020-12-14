@@ -3,6 +3,7 @@ package com.nightowl094.lib
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.annotation.IdRes
@@ -54,8 +55,12 @@ class ExpandableConstraintLayout
                             }
 
                         } ?: run {
-                            toggleControl = true
+                            if ((va.animatedValue as Int) == newHeight) {
+                                isCollapsed = isCollapsed.not()
+                                toggleControl = true
+                            }
                         }
+
                     }
                 }
         }
