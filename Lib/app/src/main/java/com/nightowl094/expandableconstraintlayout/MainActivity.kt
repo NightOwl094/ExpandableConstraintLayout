@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         closeBtn.setOnClickListener {
-            testc1.foldLayout()
+            testc1.closeLayout()
         }
 
         expand800Btn.setOnClickListener {

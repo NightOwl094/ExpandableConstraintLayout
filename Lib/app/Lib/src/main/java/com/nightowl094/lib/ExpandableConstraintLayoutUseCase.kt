@@ -11,5 +11,6 @@ interface ExpandableConstraintLayoutUseCase {
     fun foldLayoutById(@IdRes targetViewId: Int, duration: Long? = null)
     fun foldLayout(height: Int, duration: Long? = null)
     fun foldLayout(duration: Long? = null)
+    fun closeLayout()
     fun toggleLayout(duration: Long? = null)
 }

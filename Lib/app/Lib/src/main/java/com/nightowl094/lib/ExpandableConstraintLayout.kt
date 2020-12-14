@@ -107,6 +107,12 @@ class ExpandableConstraintLayout
         }
     }
 
+    override fun closeLayout() {
+        firstTargetId?.run {
+            setHeight(findYPositionById(this))
+        }
+        isCollapsed = false
+    }
 
     override fun expandLayout(duration: Long?) {
         oldExpandedHeight?.let { oldExpandedHeight ->
