@@ -62,5 +62,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        lastChild.setOnClickListener {
+            testc1.expandByLastChild()
+        }
     }
 }

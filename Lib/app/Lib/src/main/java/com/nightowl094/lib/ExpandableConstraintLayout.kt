@@ -3,8 +3,8 @@ package com.nightowl094.lib
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -124,6 +124,18 @@ class ExpandableConstraintLayout
             oldExpandedHeight = height
             startHeightChangeAnimation(height, duration)
         }
+    }
+
+    override fun expandByLastChild() {
+        if (isCollapsed) return
+
+        oldFoldedHeight = this.height
+
+        this.layoutParams = layoutParams.apply {
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+
+        isCollapsed = true
     }
 
     override fun invalidateLayout(callback: (() -> Unit)?) {
